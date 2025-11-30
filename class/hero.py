@@ -8,7 +8,7 @@ class Hero(Entity):
         self.animator = Animator('idle')
         self.is_attacking = False
         self.hp = 100
-        # Novo cronômetro específico para duração do ataque
+        
         self.attack_duration_timer = 0 
         
     def setup_animations(self):

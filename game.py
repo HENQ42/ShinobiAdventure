@@ -13,7 +13,7 @@ from enemy import Enemy
 WIDTH = 800
 HEIGHT = 600
 TITLE = "Shinobi Adventure"
-DEBUG_MODE = True  # Mude para False se quiser esconder as caixas coloridas
+DEBUG_MODE = False
 
 # --- ESTADOS DO JOGO ---
 STATE_MENU = 0
@@ -28,9 +28,9 @@ sound_enabled = True
 hero = None
 enemies = []
 platforms = []
-victory_timer = 0  # Cronômetro para a tela de vitória
+victory_timer = 0  # Cronometro para a tela de vitória
 
-# Variáveis para imagens processadas (Redimensionadas)
+
 background_img = None
 platform_img = None
 btn_start_img = None
@@ -43,13 +43,13 @@ music_playing = False
 
 # --- INTERFACE (UI - HITBOXES) ---
 
-# 1. MENU PRINCIPAL (Botões centralizados)
+# 1. MENU PRINCIPAL
 btn_start_rect = Rect((350, 200), (100, 100)) 
 btn_exit_rect = Rect((350, 320), (100, 100))
 
-# 2. UI DE JOGO (Canto Superior Direito)
-btn_sound_rect = Rect((730, 20), (50, 50))      # Botão de Som
-btn_game_exit_rect = Rect((670, 20), (50, 50))  # Botão Sair (In-game)
+# 2. UI DE JOGO
+btn_sound_rect = Rect((730, 20), (50, 50))
+btn_game_exit_rect = Rect((670, 20), (50, 50))
 
 # --- INICIALIZAÇÃO ---
 def init_game():
@@ -62,20 +62,20 @@ def init_game():
     
     # 1. Carregar e Redimensionar Imagens
     
-    # Fundo (Redimensiona para 800x600)
+    # Fundo
     if hasattr(images, 'background'):
         background_img = pygame.transform.smoothscale(images.background, (WIDTH, HEIGHT))
     
-    # Plataforma (Redimensiona para 32x14 pixels)
+    # Plataforma
     if hasattr(images, 'platform'):
         platform_img = pygame.transform.scale(images.platform, (32, 14))
     
-    # Botões do Menu (Redimensiona para 100x100 - Quadrado)
+    # Botões do Menu
     if hasattr(images, 'btn_start'):
         btn_start_img = pygame.transform.smoothscale(images.btn_start, (100, 100))
     if hasattr(images, 'btn_exit'):
         btn_exit_img = pygame.transform.smoothscale(images.btn_exit, (100, 100))
-        # Versão pequena para usar dentro do jogo (50x50)
+        
         btn_exit_small_img = pygame.transform.smoothscale(images.btn_exit, (50, 50))
 
     # Botões de Som (50x50)
@@ -84,7 +84,7 @@ def init_game():
     if hasattr(images, 'btn_sound_off'):
         btn_sound_off_img = pygame.transform.smoothscale(images.btn_sound_off, (50, 50))
 
-    # 2. Criar Mapa (Plataformas)
+    # 2. Criar Mapa
     platforms = []
     block_w = 32
     block_h = 14
@@ -148,7 +148,7 @@ def draw():
         
     elif current_state == STATE_GAME:
         draw_game()
-        # Botão de Sair (In-game)
+        # Botão de Sair
         if btn_exit_small_img:
             screen.blit(btn_exit_small_img, (btn_game_exit_rect.x, btn_game_exit_rect.y))
         if DEBUG_MODE: screen.draw.rect(btn_game_exit_rect, "yellow")
@@ -185,7 +185,7 @@ def draw_menu():
         screen.draw.rect(btn_exit_rect, "yellow")
 
 def draw_game():
-    # Desenha Plataformas (Com tiling da textura)
+    # Desenha Plataformas
     for plat_rect in platforms:
         if platform_img:
             tiles = int(plat_rect.width // 32)
@@ -193,7 +193,7 @@ def draw_game():
                 screen.blit(platform_img, (plat_rect.x + (i * 32), plat_rect.y))
         if DEBUG_MODE: screen.draw.rect(plat_rect, "green")
     
-    # Desenha Inimigos (Apenas os vivos)
+    # Desenha Inimigos
     for enemy in enemies:
         if enemy.alive:
             enemy.draw(screen)
@@ -231,7 +231,7 @@ def update(dt):
         enemies_alive_count = 0
         
         for enemy in enemies:
-            # Se morreu, pula (não atualiza física nem lógica)
+            # Se morreu, pula
             if not enemy.alive:
                 continue 
             
@@ -241,7 +241,7 @@ def update(dt):
             
             # --- COMBATE ---
             
-            # 1. Herói Ataca Inimigo (Hit Kill)
+            # 1. Herói Ataca Inimigo
             if hero.is_attacking:
                 dist_x = abs(hero.x - enemy.x)
                 dist_y = abs(hero.y - enemy.y)
@@ -251,7 +251,7 @@ def update(dt):
                     try: sounds.slash.play()
                     except: pass
             
-            # 2. Inimigo Toca Herói (Dano sem knockback)
+            # 2. Inimigo Toca Herói
             if hero.rect.colliderect(enemy.rect):
                  if not hero.is_attacking:
                      hero.hp -= 1
@@ -285,7 +285,7 @@ def update(dt):
 def on_mouse_down(pos):
     global current_state, sound_enabled
     
-    # Clique Som (Global)
+    # Clique Som
     if btn_sound_rect.collidepoint(pos):
         sound_enabled = not sound_enabled
         if sound_enabled: play_music()
